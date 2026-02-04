@@ -1,0 +1,44 @@
+# Dependencies
+node_modules
+npm-debug.log
+
+# Build output
+dist
+build
+
+# Test and coverage
+coverage
+*.lcov
+
+# Source control
+.git
+.gitignore
+
+# Documentation
+*.md
+docs
+
+# IDE
+.vscode
+.idea
+
+# Environment files
+.env
+.env.local
+.env.*
+
+# Terraform
+terraform
+
+# CI/CD
+.github
+.gitlab
+
+# Tests (for production image)
+tests
+jest.config.js
+
+# Other
+*.log
+.DS_Store
+Thumbs.db
