@@ -40,14 +40,14 @@ Prix: 56 € ((3 × 15 € × 0.8) + 20 €)
 
 ## Fonctionnalités
 
-- ✅ Calcul automatique des prix avec promotions
-- ✅ Support de plusieurs formats d'entrée (CLI, API, fichier)
-- ✅ Validation des données d'entrée
-- ✅ Extensible pour ajouter de nouvelles règles promotionnelles
-- ✅ API REST (optionnel)
-- ✅ Logs structurés
-- ✅ Containerisé avec Docker
-- ✅ Infrastructure as Code avec Terraform
+- Calcul automatique des prix avec promotions
+- Support de plusieurs formats d'entrée (CLI, API, fichier)
+- Validation des données d'entrée
+- Extensible pour ajouter de nouvelles règles promotionnelles
+- API REST (optionnel)
+- Logs structurés
+- Containerisé avec Docker
+- Infrastructure as Code avec Terraform
 
 ## Prérequis
 
@@ -85,7 +85,7 @@ docker-compose -f docker/docker-compose.yml up
 ### CLI (ligne de commande)
 ```bash
 # Mode interactif
-npm start
+npm run start:cli
 
 # Avec un fichier en entrée
 npm start -- --file panier.txt
@@ -115,7 +115,7 @@ console.log(`Prix total: ${totalPrice} €`);
 ### API REST (si activée)
 ```bash
 # Démarrer le serveur
-npm run start:server
+npm start
 
 # Calculer un panier
 curl -X POST http://localhost:3000/api/calculate \
@@ -212,7 +212,7 @@ docker tag dvd-shop-calculator:latest registry.example.com/dvd-shop:v1.0.0
 docker push registry.example.com/dvd-shop:v1.0.0
 ```
 
-## 🚢 Déploiement
+## Déploiement
 
 ### Infrastructure avec Terraform
 ```bash
@@ -249,8 +249,8 @@ terraform destroy
 
 | Commande | Description |
 |----------|-------------|
-| `npm start` | Lancer l'application en mode CLI |
-| `npm run start:server` | Démarrer le serveur API |
+| `npm start` | Démarrer le serveur API (localhost:3000) |
+| `npm run start:cli` | Lancer l'application en mode CLI |
 | `npm run build` | Compiler le TypeScript |
 | `npm test` | Exécuter les tests |
 | `npm run test:coverage` | Tests avec rapport de couverture |
@@ -269,7 +269,7 @@ terraform destroy
 - Documenter les nouvelles fonctionnalités
 
 
-## 📄 License
+## License
 
 Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
 
