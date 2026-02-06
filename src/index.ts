@@ -159,7 +159,7 @@ function processInput(
 }
 
 // Run the application
-await main().catch(error => {
+main().catch(error => {
   logger.error('Fatal error:', error);
   process.exit(1);
 });
