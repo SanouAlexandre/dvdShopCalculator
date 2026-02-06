@@ -1,0 +1,14 @@
+namespace: dvd-shop-calculator
+output:
+  file_path: ./fluidscans/Fluid-Attacks-Results_sast.csv
+  format: CSV
+working_dir: .
+language: EN
+file_size_limit: false
+sast:
+  include:
+    - .
+  exclude:
+    - glob(**/node_modules/**)
+    - glob(**/dist/**)
+    - glob(**/fluidscans/**)

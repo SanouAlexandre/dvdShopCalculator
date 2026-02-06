@@ -1,8 +1,23 @@
 # Monitoring Module - CloudWatch Alarms and Dashboards
 
-# SNS Topic for alarms
+# KMS key for SNS encryption
+resource "aws_kms_key" "sns" {
+  description             = "KMS key for SNS topic encryption"
+  deletion_window_in_days = 7
+  enable_key_rotation     = true
+
+  tags = var.tags
+}
+
+resource "aws_kms_alias" "sns" {
+  name          = "alias/${var.app_name}-${var.environment}-sns"
+  target_key_id = aws_kms_key.sns.key_id
+}
+
+# SNS Topic for alarms with server-side encryption
 resource "aws_sns_topic" "alerts" {
-  name = "${var.app_name}-${var.environment}-alerts"
+  name              = "${var.app_name}-${var.environment}-alerts"
+  kms_master_key_id = aws_kms_key.sns.id
 
   tags = var.tags
 }

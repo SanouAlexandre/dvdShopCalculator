@@ -1,0 +1,12 @@
+namespace: dvd-shop-calculator
+
+output:
+  file_path: ./fluidscans/Fluid-Attacks-Results_dast.csv
+  format: CSV
+
+working_dir: .
+
+language: EN
+
+urls:
+  - "https://dvd-shop-calculator.syascale.com/"

@@ -1,0 +1,13 @@
+namespace: dvd-shop-calculator
+output:
+  file_path: ./fluidscans/Fluid-Attacks-Results_sca.csv
+  format: CSV
+working_dir: .
+language: EN
+sca:
+  include:
+    - .
+  exclude:
+    - glob(**/node_modules/**)
+    - glob(**/dist/**)
+    - glob(**/fluidscans/**)

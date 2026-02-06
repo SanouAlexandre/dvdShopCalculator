@@ -47,3 +47,9 @@ docker/.env
 *.tmp
 *.temp
 .cache/
+
+
+# SonarQube & Fluid scanss
+.scannerwork/
+fluidscans/
+`

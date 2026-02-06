@@ -135,6 +135,13 @@ resource "aws_lb" "main" {
 
   enable_deletion_protection = var.environment == "prod"
 
+  # Enable access logging for traceability
+  access_logs {
+    bucket  = var.alb_logs_bucket
+    prefix  = "${var.app_name}-${var.environment}"
+    enabled = var.enable_access_logs
+  }
+
   tags = var.tags
 }
 
@@ -160,14 +167,35 @@ resource "aws_lb_target_group" "main" {
   tags = var.tags
 }
 
-resource "aws_lb_listener" "main" {
+resource "aws_lb_listener" "https" {
+  load_balancer_arn = aws_lb.main.arn
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+  certificate_arn   = var.certificate_arn
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.main.arn
+  }
+
+  tags = var.tags
+}
+
+# HTTP listener redirects to HTTPS
+resource "aws_lb_listener" "http_redirect" {
   load_balancer_arn = aws_lb.main.arn
   port              = 80
   protocol          = "HTTP"
 
   default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.main.arn
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
   }
 
   tags = var.tags

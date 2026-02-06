@@ -116,32 +116,46 @@ resource "aws_route_table_association" "private" {
 }
 
 # Security Groups
+# Note: ALB requires public access (0.0.0.0/0) as it's the entry point for users
 resource "aws_security_group" "alb" {
   name        = "${var.app_name}-${var.environment}-alb-sg"
   description = "Security group for Application Load Balancer"
   vpc_id      = aws_vpc.main.id
 
+  # HTTPS only - HTTP should redirect to HTTPS at ALB level
   ingress {
-    description = "HTTP from anywhere"
+    description = "HTTPS from anywhere"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = var.allowed_cidr_blocks
+  }
+
+  # HTTP for redirect to HTTPS
+  ingress {
+    description = "HTTP for HTTPS redirect"
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = var.allowed_cidr_blocks
   }
 
-  ingress {
-    description = "HTTPS from anywhere"
+  # Egress restricted to HTTPS for backend communication
+  egress {
+    description = "HTTPS outbound"
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # Egress to ECS on container port
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    description = "Container port to ECS"
+    from_port   = var.container_port
+    to_port     = var.container_port
+    protocol    = "tcp"
+    cidr_blocks = [var.vpc_cidr]
   }
 
   tags = merge(var.tags, {
@@ -154,18 +168,38 @@ resource "aws_security_group" "ecs" {
   description = "Security group for ECS tasks"
   vpc_id      = aws_vpc.main.id
 
+  # Only allow traffic on container port from ALB
   ingress {
-    description     = "Allow traffic from ALB"
-    from_port       = 0
-    to_port         = 65535
+    description     = "Allow traffic from ALB on container port"
+    from_port       = var.container_port
+    to_port         = var.container_port
     protocol        = "tcp"
     security_groups = [aws_security_group.alb.id]
   }
 
+  # HTTPS egress for external API calls
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    description = "HTTPS outbound"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  # DNS egress
+  egress {
+    description = "DNS UDP"
+    from_port   = 53
+    to_port     = 53
+    protocol    = "udp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    description = "DNS TCP"
+    from_port   = 53
+    to_port     = 53
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 

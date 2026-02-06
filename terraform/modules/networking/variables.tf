@@ -19,3 +19,15 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "container_port" {
+  description = "Port the container listens on"
+  type        = number
+  default     = 3000
+}
+
+variable "allowed_cidr_blocks" {
+  description = "CIDR blocks allowed to access the ALB"
+  type        = list(string)
+  default     = ["0.0.0.0/0"]  # Configurable for restricted access
+}

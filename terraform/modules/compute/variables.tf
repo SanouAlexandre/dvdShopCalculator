@@ -62,3 +62,20 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "certificate_arn" {
+  description = "ARN of the ACM certificate for HTTPS"
+  type        = string
+}
+
+variable "alb_logs_bucket" {
+  description = "S3 bucket name for ALB access logs"
+  type        = string
+  default     = ""
+}
+
+variable "enable_access_logs" {
+  description = "Enable ALB access logging"
+  type        = bool
+  default     = true
+}
