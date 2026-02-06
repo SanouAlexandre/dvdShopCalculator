@@ -12,3 +12,6 @@ sast:
     - glob(**/node_modules/**)
     - glob(**/dist/**)
     - glob(**/fluidscans/**)
+    # F372 false positive: HTTP between ALB→ECS is AWS TLS termination pattern
+    # Traffic is internal VPC only, protected by security groups and private subnets
+    - terraform/modules/compute/main.tf

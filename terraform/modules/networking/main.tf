@@ -186,21 +186,21 @@ resource "aws_security_group" "ecs" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # DNS egress
+  # DNS egress - restricted to VPC CIDR (includes AWS VPC DNS resolver at CIDR+2)
   egress {
-    description = "DNS UDP"
+    description = "DNS UDP - VPC internal only"
     from_port   = 53
     to_port     = 53
     protocol    = "udp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [var.vpc_cidr]
   }
 
   egress {
-    description = "DNS TCP"
+    description = "DNS TCP - VPC internal only"
     from_port   = 53
     to_port     = 53
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [var.vpc_cidr]
   }
 
   tags = merge(var.tags, {

@@ -145,10 +145,13 @@ resource "aws_lb" "main" {
   tags = var.tags
 }
 
+# Target group uses HTTP for internal VPC traffic after TLS termination at ALB
+# This is a standard AWS pattern - traffic between ALB and ECS stays within private subnets
+# fluidscan:ignore terraform.aws_elb.f372.insecure_http_protocol
 resource "aws_lb_target_group" "main" {
   name        = "${var.app_name}-${var.environment}-tg"
   port        = var.container_port
-  protocol    = "HTTP"
+  protocol    = "HTTP"  # Internal VPC traffic only - TLS terminated at ALB
   vpc_id      = var.vpc_id
   target_type = "ip"
 
@@ -160,7 +163,7 @@ resource "aws_lb_target_group" "main" {
     interval            = 30
     path                = "/health"
     port                = "traffic-port"
-    protocol            = "HTTP"
+    protocol            = "HTTP"  # Internal health check within VPC
     matcher             = "200"
   }
 
@@ -171,7 +174,7 @@ resource "aws_lb_listener" "https" {
   load_balancer_arn = aws_lb.main.arn
   port              = 443
   protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+  ssl_policy        = "ELBSecurityPolicy-TLS13-1-3-2021-06"  # TLS 1.3 only - strongest security
   certificate_arn   = var.certificate_arn
 
   default_action {
