@@ -159,6 +159,7 @@ function processInput(
 }
 
 // Run the application
+// NOSONAR: Top-level await not supported with CommonJS module system
 main().catch(error => {
   logger.error('Fatal error:', error);
   process.exit(1);
