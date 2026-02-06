@@ -1,3 +1,20 @@
+/**
+ * Express server configuration for the DVD Shop Calculator API.
+ *
+ * This module sets up the HTTP server with:
+ * - Security headers (CSP, HSTS, X-Content-Type-Options, etc.)
+ * - JSON body parsing middleware
+ * - Static file serving for the frontend
+ * - REST API endpoints for price calculation
+ * - Error handling and 404 responses
+ *
+ * The server can run in two modes:
+ * - Standalone: Listens on a port (default: 3000)
+ * - Serverless: Exported for Vercel deployment
+ *
+ * @module server
+ */
+
 import express, { Application, Request, Response, NextFunction } from 'express';
 import path from 'node:path';
 import { Calculator } from './core/calculator';
@@ -6,13 +23,32 @@ import { PriceFormatter } from './infrastructure/formatters/PriceFormatter';
 import { logger } from './utils/logger';
 import { DEFAULT_PORT, API_PREFIX } from './utils/constants';
 
+/** Express application instance */
 const app: Application = express();
+
+/** Server port from environment or default */
 const port = process.env.PORT || DEFAULT_PORT;
 
-// Security: Disable X-Powered-By header to hide Express fingerprint
+// ============================================================================
+// SECURITY CONFIGURATION
+// ============================================================================
+
+/**
+ * Security: Disable X-Powered-By header.
+ * This prevents attackers from easily identifying that the server runs Express,
+ * reducing the attack surface for known Express vulnerabilities.
+ */
 app.disable('x-powered-by');
 
-// Security headers middleware
+/**
+ * Security headers middleware.
+ * Applies comprehensive security headers to all responses:
+ * - CSP: Prevents XSS and injection attacks
+ * - X-Content-Type-Options: Prevents MIME sniffing
+ * - HSTS: Enforces HTTPS connections
+ * - Permissions-Policy: Restricts browser features
+ * - Referrer-Policy: Controls referrer information
+ */
 app.use((_req: Request, res: Response, next: NextFunction) => {
   // Content Security Policy with upgrade-insecure-requests and frame-ancestors
   res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'; upgrade-insecure-requests");
@@ -27,23 +63,55 @@ app.use((_req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-// Middleware
+// ============================================================================
+// MIDDLEWARE CONFIGURATION
+// ============================================================================
+
+/** Parse JSON request bodies */
 app.use(express.json());
 
-// Serve static files (frontend)
+/** Serve static files (frontend HTML, CSS, JS) from the public directory */
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Services
+// ============================================================================
+// SERVICE INITIALIZATION
+// ============================================================================
+
+/** Parser for converting movie titles to Cart objects */
 const parser = new CartParser();
+
+/** Calculator for computing totals with discount rules */
 const calculator = new Calculator();
+
+/** Formatter for price display */
 const formatter = new PriceFormatter();
 
-// Health check endpoint
+// ============================================================================
+// API ENDPOINTS
+// ============================================================================
+
+/**
+ * Health check endpoint.
+ * Returns server status and timestamp.
+ * Used by load balancers and monitoring systems.
+ *
+ * @route GET /health
+ * @returns {object} 200 - Status object with timestamp
+ */
 app.get('/health', (_req: Request, res: Response) => {
   res.json({ status: 'healthy', timestamp: new Date().toISOString() });
 });
 
-// Calculate endpoint
+/**
+ * Calculate cart total endpoint.
+ * Accepts an array of movie titles and returns the calculated price
+ * with any applicable discounts.
+ *
+ * @route POST /api/calculate
+ * @param {string[]} items - Array of movie titles
+ * @returns {object} 200 - Calculation result with total, discount, and breakdown
+ * @returns {object} 400 - Invalid request (missing or invalid items)
+ */
 app.post(`${API_PREFIX}/calculate`, (req: Request, res: Response, next: NextFunction) => {
   try {
     const { items } = req.body as { items?: string[] };
@@ -82,7 +150,15 @@ app.post(`${API_PREFIX}/calculate`, (req: Request, res: Response, next: NextFunc
   }
 });
 
-// Error handling middleware
+// ============================================================================
+// ERROR HANDLING
+// ============================================================================
+
+/**
+ * Global error handling middleware.
+ * Catches unhandled errors and returns appropriate error responses.
+ * In development mode, includes error message for debugging.
+ */
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   logger.error('Unhandled error:', err);
   res.status(500).json({
@@ -91,7 +167,10 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   });
 });
 
-// 404 handler
+/**
+ * 404 Not Found handler.
+ * Catches requests to undefined routes.
+ */
 app.use((_req: Request, res: Response) => {
   res.status(404).json({
     error: 'Not found',
@@ -99,7 +178,14 @@ app.use((_req: Request, res: Response) => {
   });
 });
 
-// Start server only when not in serverless environment
+// ============================================================================
+// SERVER STARTUP
+// ============================================================================
+
+/**
+ * Start HTTP server in standalone mode.
+ * Skipped in serverless environments (Vercel) where the platform handles routing.
+ */
 if (!process.env.VERCEL) {
   app.listen(port, () => {
     logger.info(`🎬 DVD Shop Calculator API running on port ${port}`);

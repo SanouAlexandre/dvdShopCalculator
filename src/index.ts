@@ -1,3 +1,31 @@
+/**
+ * Command-Line Interface (CLI) for the DVD Shop Calculator.
+ *
+ * This module provides two modes of operation:
+ *
+ * 1. Interactive Mode:
+ *    Run without arguments to enter movies one by one.
+ *    Commands: done, quit, clear, list
+ *
+ * 2. Piped Input Mode:
+ *    Accepts input from files or stdin pipes.
+ *    Example: echo "Back to the Future 1" | npm run start:cli
+ *
+ * Features:
+ * - Parses movie titles and calculates totals
+ * - Applies Back to the Future trilogy discounts
+ * - Displays formatted receipts
+ *
+ * @module index
+ * @example
+ * // Interactive mode
+ * npm run start:cli
+ *
+ * @example
+ * // Piped input
+ * cat movies.txt | npm run start:cli
+ */
+
 import * as readline from 'node:readline';
 import { Calculator } from './core/calculator';
 import { CartParser } from './infrastructure/parsers/CartParser';
@@ -5,7 +33,8 @@ import { PriceFormatter } from './infrastructure/formatters/PriceFormatter';
 import { logger } from './utils/logger';
 
 /**
- * Main entry point for the DVD Shop Calculator CLI
+ * Main entry point for the DVD Shop Calculator CLI.
+ * Detects input mode (interactive vs piped) and delegates accordingly.
  */
 async function main(): Promise<void> {
   const parser = new CartParser();
