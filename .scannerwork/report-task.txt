@@ -2,5 +2,5 @@ projectKey=dvd-shop-calculator
 serverUrl=http://localhost:9000
 serverVersion=26.1.0.118079
 dashboardUrl=http://localhost:9000/dashboard?id=dvd-shop-calculator
-ceTaskId=5a481993-3a0e-4cdf-92b8-d1db8dca173c
-ceTaskUrl=http://localhost:9000/api/ce/task?id=5a481993-3a0e-4cdf-92b8-d1db8dca173c
+ceTaskId=2cf1fd2d-f72e-4218-898e-411537865a8d
+ceTaskUrl=http://localhost:9000/api/ce/task?id=2cf1fd2d-f72e-4218-898e-411537865a8d
