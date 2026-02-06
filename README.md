@@ -61,7 +61,7 @@ Prix: 56 € ((3 × 15 € × 0.8) + 20 €)
 ### Installation standard
 ```bash
 # Cloner le repository
-git clone https://github.com/votre-org/dvd-shop-calculator.git
+git clone https://github.com/SanouAlexandre/dvdShopCalculator
 cd dvd-shop-calculator
 
 # Installer les dépendances
