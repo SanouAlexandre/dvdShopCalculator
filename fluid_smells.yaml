@@ -1,0 +1,19 @@
+namespace: mentaDemo
+output:
+  file_path: ./fluidscans/Fluid-Attacks-Results_smells.csv
+  format: CSV
+
+working_dir: .
+language: EN
+file_size_limit: false
+
+smells:
+  include:
+    - .
+  exclude:
+    - glob(**/node_modules/**)
+    - glob(**/dist/**)
+    - glob(**/build/**)
+    - glob(**/coverage/**)
+    - glob(**/.cache/**)
+    - glob(**/fluidscans/**)

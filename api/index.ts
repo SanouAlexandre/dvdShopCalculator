@@ -9,6 +9,23 @@ const app: Application = express();
 // Security: Disable X-Powered-By header to hide Express fingerprint
 app.disable('x-powered-by');
 
+// Security headers middleware
+app.use((_req: Request, res: Response, next: NextFunction) => {
+  // Content Security Policy with upgrade-insecure-requests
+  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; upgrade-insecure-requests");
+  // Prevent MIME type sniffing
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  // Permissions Policy (disable unnecessary features)
+  res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=(), payment=()');
+  // Strict Transport Security with includeSubDomains
+  res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
+  // Referrer Policy
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  // X-Frame-Options for clickjacking protection
+  res.setHeader('X-Frame-Options', 'DENY');
+  next();
+});
+
 // Middleware
 app.use(express.json());
 
