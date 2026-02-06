@@ -1,4 +1,4 @@
-import * as readline from 'readline';
+import * as readline from 'node:readline';
 import { Calculator } from './core/calculator';
 import { CartParser } from './infrastructure/parsers/CartParser';
 import { PriceFormatter } from './infrastructure/formatters/PriceFormatter';
@@ -159,7 +159,7 @@ function processInput(
 }
 
 // Run the application
-main().catch(error => {
+await main().catch(error => {
   logger.error('Fatal error:', error);
   process.exit(1);
 });

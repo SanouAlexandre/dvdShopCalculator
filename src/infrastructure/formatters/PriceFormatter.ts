@@ -37,21 +37,25 @@ export class PriceFormatter {
    * Formats a calculation result for display
    */
   formatResult(result: CalculationResult): string {
-    const lines: string[] = [];
-
-    lines.push('═══════════════════════════════════════');
-    lines.push('         DVD SHOP - RECEIPT');
-    lines.push('═══════════════════════════════════════');
-    lines.push('');
+    const lines: string[] = [
+      '═══════════════════════════════════════',
+      '         DVD SHOP - RECEIPT',
+      '═══════════════════════════════════════',
+      '',
+    ];
 
     // BTTF movies section
     if (result.breakdown.bttfMoviesCount > 0) {
-      lines.push(`Back to the Future DVDs: ${result.breakdown.bttfMoviesCount}`);
-      lines.push(`  Base price: ${this.formatPrice(result.breakdown.bttfBasePrice)}`);
+      lines.push(
+        `Back to the Future DVDs: ${result.breakdown.bttfMoviesCount}`,
+        `  Base price: ${this.formatPrice(result.breakdown.bttfBasePrice)}`
+      );
 
       if (result.discountApplied) {
-        lines.push(`  Discount: -${result.discountApplied}`);
-        lines.push(`  After discount: ${this.formatPrice(result.breakdown.bttfDiscountedPrice)}`);
+        lines.push(
+          `  Discount: -${result.discountApplied}`,
+          `  After discount: ${this.formatPrice(result.breakdown.bttfDiscountedPrice)}`
+        );
       }
 
       lines.push('');
@@ -59,14 +63,18 @@ export class PriceFormatter {
 
     // Other movies section
     if (result.breakdown.otherMoviesCount > 0) {
-      lines.push(`Other DVDs: ${result.breakdown.otherMoviesCount}`);
-      lines.push(`  Price: ${this.formatPrice(result.breakdown.otherMoviesPrice)}`);
-      lines.push('');
+      lines.push(
+        `Other DVDs: ${result.breakdown.otherMoviesCount}`,
+        `  Price: ${this.formatPrice(result.breakdown.otherMoviesPrice)}`,
+        ''
+      );
     }
 
-    lines.push('───────────────────────────────────────');
-    lines.push(`TOTAL: ${this.formatPrice(result.totalPrice)}`);
-    lines.push('═══════════════════════════════════════');
+    lines.push(
+      '───────────────────────────────────────',
+      `TOTAL: ${this.formatPrice(result.totalPrice)}`,
+      '═══════════════════════════════════════'
+    );
 
     return lines.join('\n');
   }

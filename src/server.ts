@@ -1,5 +1,5 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
-import path from 'path';
+import path from 'node:path';
 import { Calculator } from './core/calculator';
 import { CartParser } from './infrastructure/parsers/CartParser';
 import { PriceFormatter } from './infrastructure/formatters/PriceFormatter';

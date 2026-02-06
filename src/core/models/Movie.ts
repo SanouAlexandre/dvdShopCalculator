@@ -20,13 +20,13 @@ export function createMovie(title: string, standardPrice: number, bttfPrice: num
     /^Back to the Future\s*(\d)$/i,
     /^Back to Future\s*(\d)$/i,
     /^BTTF\s*(\d)$/i,
-    /^Retour vers le [Ff]utur\s*(\d)$/i,
+    /^Retour vers le futur\s*(\d)$/i,
   ];
 
   for (const pattern of bttfPatterns) {
-    const match = normalizedTitle.match(pattern);
+    const match = pattern.exec(normalizedTitle);
     if (match) {
-      const episode = parseInt(match[1], 10);
+      const episode = Number.parseInt(match[1], 10);
       if (episode >= 1 && episode <= 3) {
         return {
           title: normalizedTitle,
