@@ -5,8 +5,8 @@ The DVD Shop Calculator provides a REST API for calculating DVD prices.
 ## Base URL
 
 - **Development**: `http://localhost:3000`
-- **Staging**: `https://staging.dvd-shop.example.com`
-- **Production**: `https://dvd-shop.example.com`
+- **Vercel (Production)**: `https://dvd-shop-calculator.vercel.app`
+- **Custom Domain**: `https://dvd-shop-calculator.syascale.com`
 
 ## Endpoints
 

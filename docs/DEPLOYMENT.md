@@ -26,12 +26,16 @@ This document describes how to deploy the DVD Shop Calculator to various environ
 # Install dependencies
 npm install
 
-# Run in development mode
-npm run start:dev
-
-# Or with the API server
-npm run start:server:dev
+# Build the project
+npm run build
 ```
+
+| Command | Description |
+|---------|-------------|
+| `npm start` | Start web server (http://localhost:3000) |
+| `npm run start:cli` | Start interactive CLI mode |
+| `npm run start:dev` | Start web server in development mode (with ts-node) |
+| `npm run start:cli:dev` | Start CLI in development mode |
 
 ### Using Docker Compose
 
@@ -73,6 +77,27 @@ docker push ghcr.io/org/dvd-shop-calculator:v1.0.0
 ```
 
 ## Cloud Deployment
+
+### Vercel (Serverless)
+
+The project is configured for automatic deployment to Vercel.
+
+**Live URL**: https://dvd-shop-calculator.vercel.app
+
+**Configuration files**:
+- `vercel.json` - Routing and build configuration
+- `api/index.ts` - Serverless function entry point
+- `public/` - Static files (auto-served)
+
+**Automatic deployment**:
+1. Push to `main` branch
+2. Vercel builds and deploys automatically
+3. Preview deployments created for PRs
+
+**Environment notes**:
+- File logging is disabled on Vercel (read-only filesystem)
+- The `VERCEL` environment variable is automatically set
+- Static files are served from `public/` folder
 
 ### AWS (ECS Fargate)
 

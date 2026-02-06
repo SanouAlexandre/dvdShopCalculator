@@ -29,7 +29,7 @@ Please be respectful and professional in all interactions. We welcome contributi
 1. Fork the repository
 2. Clone your fork:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/dvd-shop-calculator.git
+   git clone hhttps://github.com/SanouAlexandre/dvdShopCalculator
    cd dvd-shop-calculator
    ```
 
@@ -47,15 +47,21 @@ Please be respectful and professional in all interactions. We welcome contributi
 
 ### Running Locally
 
+| Command | Description |
+|---------|-------------|
+| `npm start` | Start web server (http://localhost:3000) |
+| `npm run start:cli` | Start interactive CLI mode |
+| `npm run start:dev` | Web server in development mode |
+| `npm run start:cli:dev` | CLI in development mode |
+| `npm run build` | Build TypeScript |
+| `npm run watch` | Watch mode for TypeScript |
+
 ```bash
-# Development mode
-npm run start:dev
+# Build the project
+npm run build
 
-# API server
-npm run start:server:dev
-
-# Watch mode for TypeScript
-npm run watch
+# Start the server
+npm start
 ```
 
 ### Using Docker

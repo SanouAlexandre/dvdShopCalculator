@@ -82,16 +82,24 @@ docker-compose -f docker/docker-compose.yml up
 
 ## Utilisation
 
+### Scripts disponibles
+
+| Commande | Description |
+|----------|-------------|
+| `npm start` | Démarre le serveur web (http://localhost:3000) |
+| `npm run start:cli` | Démarre le mode CLI interactif |
+| `npm run start:dev` | Serveur web en mode développement |
+| `npm run start:cli:dev` | CLI en mode développement |
+| `npm run build` | Compile le projet TypeScript |
+| `npm test` | Exécute les tests |
+| `npm run test:coverage` | Tests avec rapport de couverture |
+
 ### CLI (ligne de commande)
 ```bash
 # Mode interactif
 npm run start:cli
 
-# Avec un fichier en entrée
-npm start -- --file panier.txt
-
-# Avec une entrée directe
-echo "Back to the Future 1\nBack to the Future 2\nBack to the Future 3" | npm start
+# Suivez les instructions pour entrer les films
 ```
 
 ### Utilisation programmatique
@@ -112,10 +120,12 @@ const totalPrice = calculator.calculateTotal(cart);
 console.log(`Prix total: ${totalPrice} €`);
 ```
 
-### API REST (si activée)
+### API REST
 ```bash
 # Démarrer le serveur
 npm start
+
+# Le serveur est accessible sur http://localhost:3000
 
 # Calculer un panier
 curl -X POST http://localhost:3000/api/calculate \
@@ -136,6 +146,8 @@ curl -X POST http://localhost:3000/api/calculate \
   "discountApplied": "20%"
 }
 ```
+
+**Déployé sur Vercel**: https://dvd-shop-calculator.vercel.app
 
 ## Architecture
 ```
