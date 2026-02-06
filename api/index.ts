@@ -6,6 +6,9 @@ import { API_PREFIX } from '../src/utils/constants';
 
 const app: Application = express();
 
+// Security: Disable X-Powered-By header to hide Express fingerprint
+app.disable('x-powered-by');
+
 // Middleware
 app.use(express.json());
 

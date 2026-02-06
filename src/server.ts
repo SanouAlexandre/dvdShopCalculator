@@ -9,6 +9,9 @@ import { DEFAULT_PORT, API_PREFIX } from './utils/constants';
 const app: Application = express();
 const port = process.env.PORT || DEFAULT_PORT;
 
+// Security: Disable X-Powered-By header to hide Express fingerprint
+app.disable('x-powered-by');
+
 // Middleware
 app.use(express.json());
 
