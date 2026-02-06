@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "🔨 Building DVD Shop Calculator..."
+echo "Building DVD Shop Calculator..."
 
 # Clean previous build
 rm -rf dist
@@ -18,4 +18,4 @@ npm test
 # Build TypeScript
 npm run build
 
-echo "✅ Build complete!"
+echo "Build complete!"

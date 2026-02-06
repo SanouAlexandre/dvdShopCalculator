@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e
 
-echo "🧪 Running tests..."
+echo "Running tests..."
 
 # Run all tests with coverage
 npm run test:coverage
 
-echo "✅ All tests passed!"
+echo "All tests passed!"

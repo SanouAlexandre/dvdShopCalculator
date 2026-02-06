@@ -1,0 +1,15 @@
+namespace: dvd-shop-calculator
+output:
+  file_path: ./fluidscans/Fluid-Attacks-Results_cspm.csv
+  format: CSV # ou JSON
+working_dir: .
+language: EN
+
+cspm:
+  include:
+    - ./cloud_configs/ # chemin vers tes fichiers de configuration cloud
+  exclude:
+    - glob(**/node_modules/**)
+    - glob(**/dist/**)
+    - glob(**/.git/**)
+    - glob(**/fluidscans/**)

@@ -1,4 +1,4 @@
-namespace: mentaDemo
+namespace: dvd-shop-calculator
 output:
   file_path: ./fluidscans/Fluid-Attacks-Results_smells.csv
   format: CSV
