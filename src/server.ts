@@ -81,11 +81,15 @@ app.use((_req: Request, res: Response) => {
   });
 });
 
-// Start server
-app.listen(port, () => {
-  logger.info(`🎬 DVD Shop Calculator API running on port ${port}`);
-  logger.info(`Health check: http://localhost:${port}/health`);
-  logger.info(`Calculate endpoint: POST http://localhost:${port}${API_PREFIX}/calculate`);
-});
+// Start server only when not in serverless environment
+if (!process.env.VERCEL) {
+  app.listen(port, () => {
+    logger.info(`🎬 DVD Shop Calculator API running on port ${port}`);
+    logger.info(`Health check: http://localhost:${port}/health`);
+    logger.info(`Calculate endpoint: POST http://localhost:${port}${API_PREFIX}/calculate`);
+  });
+}
 
+// Export for Vercel serverless
+export default app;
 export { app };
