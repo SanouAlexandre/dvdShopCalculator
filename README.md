@@ -1,6 +1,6 @@
 # DVD Shop Calculator 🎬
 
-Application de calcul de prix pour une boutique de DVDs avec système de promotions intelligent pour la saga "Back to the Future".
+Application de calcul de prix pour une boutique de DVDs avec système de promotions intelligent pour la saga "Back to the Future"
 
 ## Table des matières
 
