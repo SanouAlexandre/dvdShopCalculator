@@ -7,6 +7,7 @@
  * - Static file serving for the frontend
  * - REST API endpoints for price calculation
  * - Error handling and 404 responses
+ * - Sentry error tracking (when SENTRY_DSN is configured)
  *
  * The server can run in two modes:
  * - Standalone: Listens on a port (default: 3000)
@@ -22,6 +23,16 @@ import { CartParser } from './infrastructure/parsers/CartParser';
 import { PriceFormatter } from './infrastructure/formatters/PriceFormatter';
 import { logger } from './utils/logger';
 import { DEFAULT_PORT, API_PREFIX } from './utils/constants';
+import {
+  initSentry,
+  sentryRequestHandler,
+  sentryErrorHandler,
+  captureException,
+  addBreadcrumb,
+} from './instrumentation/sentry';
+
+// Initialize Sentry before anything else
+initSentry();
 
 /** Express application instance */
 const app: Application = express();
@@ -39,6 +50,12 @@ const port = process.env.PORT || DEFAULT_PORT;
  * reducing the attack surface for known Express vulnerabilities.
  */
 app.disable('x-powered-by');
+
+/**
+ * Sentry request handler.
+ * Must be the first middleware to properly trace requests.
+ */
+app.use(sentryRequestHandler);
 
 /**
  * Security headers middleware.
@@ -116,6 +133,14 @@ app.post(`${API_PREFIX}/calculate`, (req: Request, res: Response, next: NextFunc
   try {
     const { items } = req.body as { items?: string[] };
 
+    // Add breadcrumb for debugging
+    addBreadcrumb({
+      message: 'Calculate request received',
+      category: 'api',
+      level: 'info',
+      data: { itemsCount: items?.length ?? 0 },
+    });
+
     if (!items || !Array.isArray(items)) {
       res.status(400).json({
         error: 'Invalid request',
@@ -155,12 +180,24 @@ app.post(`${API_PREFIX}/calculate`, (req: Request, res: Response, next: NextFunc
 // ============================================================================
 
 /**
+ * Sentry error handler.
+ * Must be the first error middleware to capture all errors.
+ */
+app.use(sentryErrorHandler);
+
+/**
  * Global error handling middleware.
  * Catches unhandled errors and returns appropriate error responses.
  * In development mode, includes error message for debugging.
  */
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   logger.error('Unhandled error:', err);
+  // Also report to Sentry with additional context
+  captureException(err, {
+    url: _req.url,
+    method: _req.method,
+    body: _req.body,
+  });
   res.status(500).json({
     error: 'Internal server error',
     message: process.env.NODE_ENV === 'development' ? err.message : 'An unexpected error occurred',

@@ -6,7 +6,7 @@
  * - Security headers (CSP, HSTS, X-Content-Type-Options, etc.)
  * - JSON body parsing
  * - REST API endpoints for price calculation
- * - Error handling
+ * - Error handling with Sentry integration
  *
  * Note: This module does NOT include:
  * - Static file serving (handled by Vercel's static hosting)
@@ -21,6 +21,16 @@ import { Calculator } from '../src/core/calculator';
 import { CartParser } from '../src/infrastructure/parsers/CartParser';
 import { PriceFormatter } from '../src/infrastructure/formatters/PriceFormatter';
 import { API_PREFIX } from '../src/utils/constants';
+import {
+  initSentry,
+  sentryRequestHandler,
+  sentryErrorHandler,
+  captureException,
+  addBreadcrumb,
+} from '../src/instrumentation/sentry';
+
+// Initialize Sentry at module load
+initSentry();
 
 /** Express application instance for serverless deployment */
 const app: Application = express();
@@ -34,6 +44,12 @@ const app: Application = express();
  * Prevents identification of Express framework.
  */
 app.disable('x-powered-by');
+
+/**
+ * Sentry request handler.
+ * Must be the first middleware for proper tracing.
+ */
+app.use(sentryRequestHandler);
 
 /**
  * Security headers middleware.
@@ -96,6 +112,14 @@ app.post(`${API_PREFIX}/calculate`, (req: Request, res: Response, next: NextFunc
   try {
     const { items } = req.body as { items?: string[] };
 
+    // Add breadcrumb for debugging
+    addBreadcrumb({
+      message: 'Calculate request received',
+      category: 'api',
+      level: 'info',
+      data: { itemsCount: items?.length ?? 0 },
+    });
+
     if (!items || !Array.isArray(items)) {
       res.status(400).json({
         error: 'Invalid request',
@@ -135,11 +159,22 @@ app.post(`${API_PREFIX}/calculate`, (req: Request, res: Response, next: NextFunc
 // ============================================================================
 
 /**
+ * Sentry error handler middleware.
+ * Captures exceptions and sends them to Sentry.
+ */
+app.use(sentryErrorHandler);
+
+/**
  * Global error handling middleware.
  * Returns 500 with generic message for security.
  */
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error('Unhandled error:', err);
+  // Additional capture with context
+  captureException(err, {
+    url: _req.url,
+    method: _req.method,
+  });
   res.status(500).json({
     error: 'Internal server error',
     message: 'An unexpected error occurred',
