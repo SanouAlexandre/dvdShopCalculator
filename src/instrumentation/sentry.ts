@@ -48,10 +48,10 @@ export function initSentry(): void {
 
     // Performance Monitoring
     // Capture 100% of transactions in development, 10% in production
-    tracesSampleRate: SENTRY_ENVIRONMENT === 'production' ? 0.1 : 1.0,
+    tracesSampleRate: SENTRY_ENVIRONMENT === 'production' ? 0.1 : 1,
 
     // Profiling (requires additional setup)
-    profilesSampleRate: SENTRY_ENVIRONMENT === 'production' ? 0.1 : 1.0,
+    profilesSampleRate: SENTRY_ENVIRONMENT === 'production' ? 0.1 : 1,
 
     // Integration options
     integrations: [
@@ -167,4 +167,4 @@ export const sentryRequestHandler = ((
 ) => next());
 
 // Re-export Sentry for advanced usage
-export { Sentry };
+export * as Sentry from '@sentry/node';
