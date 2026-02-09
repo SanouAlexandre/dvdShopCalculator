@@ -1,7 +1,5 @@
 # Multi-stage build for optimized production image
-# Pin to specific digest for security - update periodically with:
-# docker pull node:20-alpine && docker inspect --format='{{index .RepoDigests 0}}' node:20-alpine
-FROM node:20-alpine@sha256:bf77dc26e48ea95fca9d1aceb5acfa69d2e546b765ec2abfb502975f1a7d093f AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
@@ -22,7 +20,7 @@ RUN npm run build
 RUN npm prune --production
 
 # Production stage
-FROM node:20-alpine@sha256:bf77dc26e48ea95fca9d1aceb5acfa69d2e546b765ec2abfb502975f1a7d093f
+FROM node:20-alpine
 
 WORKDIR /app
 
