@@ -12,36 +12,40 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fafafa;
             min-height: 100vh;
-            color: #fff;
-            padding: 20px;
+            color: #1a1a1a;
+            padding: 40px 20px;
+            line-height: 1.6;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 860px;
             margin: 0 auto;
         }
 
         header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 48px;
         }
 
         header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: 1.75rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
         }
 
         header p {
-            color: #d4d4d4;
+            color: #666;
+            font-size: 0.95rem;
         }
 
         .main-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 32px;
         }
 
         @media (max-width: 768px) {
@@ -51,233 +55,256 @@
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 24px;
-            backdrop-filter: blur(10px);
+            background: #fff;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 28px;
         }
 
         .card h2 {
-            margin-bottom: 20px;
-            font-size: 1.3rem;
+            margin-bottom: 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1a1a1a;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .movie-list {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            min-height: 60px;
         }
 
         .movie-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px;
-            background: rgba(255, 255, 255, 0.05);
+            padding: 14px 16px;
+            background: #fafafa;
             border-radius: 8px;
             margin-bottom: 8px;
+            border: 1px solid #eee;
         }
 
         .movie-item.bttf {
-            border-left: 3px solid #f39c12;
+            border-left: 3px solid #0066cc;
+            background: #f0f7ff;
         }
 
         .movie-item .title {
             flex: 1;
+            font-size: 0.9rem;
         }
 
         .movie-item .price {
-            color: #58d68d;
-            font-weight: bold;
-            margin-right: 15px;
+            color: #1a1a1a;
+            font-weight: 600;
+            margin-right: 16px;
+            font-size: 0.9rem;
         }
 
         .movie-item button {
-            background: #c0392b;
-            border: none;
-            color: white;
+            background: transparent;
+            border: 1px solid #ddd;
+            color: #999;
             width: 28px;
             height: 28px;
-            border-radius: 50%;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 16px;
-            transition: transform 0.2s;
+            font-size: 14px;
+            transition: all 0.15s;
         }
 
         .movie-item button:hover {
-            transform: scale(1.1);
+            background: #ff4444;
+            border-color: #ff4444;
+            color: white;
         }
 
         .add-section {
-            margin-top: 20px;
+            margin-top: 24px;
         }
 
         .input-group {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
 
         input[type="text"] {
             flex: 1;
             padding: 12px 16px;
-            border: none;
+            border: 1px solid #ddd;
             border-radius: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            font-size: 14px;
+            background: #fff;
+            color: #1a1a1a;
+            font-size: 0.9rem;
         }
 
         input[type="text"]::placeholder {
-            color: #d4d4d4;
+            color: #999;
         }
 
         input[type="text"]:focus {
-            outline: 2px solid #3498db;
+            outline: none;
+            border-color: #0066cc;
         }
 
         .btn {
-            padding: 12px 24px;
+            padding: 12px 20px;
             border: none;
             border-radius: 8px;
-            font-size: 14px;
-            font-weight: bold;
+            font-size: 0.9rem;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.15s;
         }
 
         .btn-primary {
-            background: #3498db;
+            background: #0066cc;
             color: white;
         }
 
         .btn-primary:hover {
-            background: #2980b9;
+            background: #0052a3;
         }
 
         .btn-success {
-            background: #2ecc71;
+            background: #0066cc;
             color: white;
         }
 
         .btn-success:hover {
-            background: #27ae60;
+            background: #0052a3;
         }
 
         .quick-add {
-            margin-top: 15px;
+            margin-top: 20px;
         }
 
         .quick-add p {
-            font-size: 12px;
-            color: #d4d4d4;
+            font-size: 0.8rem;
+            color: #666;
             margin-bottom: 10px;
         }
 
         .quick-buttons {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
         }
 
         .quick-btn {
-            padding: 8px 12px;
-            background: rgba(243, 156, 18, 0.3);
-            border: 1px solid #f5b041;
-            border-radius: 20px;
-            color: #f5b041;
-            font-size: 12px;
+            padding: 6px 12px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            color: #444;
+            font-size: 0.8rem;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.15s;
         }
 
         .quick-btn:hover {
-            background: #f5b041;
-            color: #000;
+            background: #0066cc;
+            border-color: #0066cc;
+            color: white;
         }
 
         .quick-btn.standard {
-            background: rgba(52, 152, 219, 0.3);
-            border-color: #5dade2;
-            color: #5dade2;
+            background: #fff;
+            border-color: #ddd;
+            color: #444;
         }
 
         .quick-btn.standard:hover {
-            background: #3498db;
+            background: #0066cc;
+            border-color: #0066cc;
             color: white;
         }
 
         /* Receipt */
         .receipt {
-            background: #fff;
-            color: #333;
+            background: #fafafa;
+            color: #1a1a1a;
             border-radius: 8px;
-            padding: 20px;
-            font-family: 'Courier New', monospace;
+            padding: 24px;
+            border: 1px solid #eee;
         }
 
         .receipt-header {
             text-align: center;
-            border-bottom: 2px dashed #ccc;
-            padding-bottom: 15px;
-            margin-bottom: 15px;
+            border-bottom: 1px solid #e5e5e5;
+            padding-bottom: 16px;
+            margin-bottom: 16px;
         }
 
         .receipt-header h3 {
-            color: #2c3e50;
+            color: #1a1a1a;
+            font-size: 0.95rem;
+            font-weight: 600;
         }
 
         .receipt-items {
-            margin-bottom: 15px;
+            margin-bottom: 16px;
         }
 
         .receipt-line {
             display: flex;
             justify-content: space-between;
-            padding: 5px 0;
-            font-size: 13px;
+            padding: 6px 0;
+            font-size: 0.85rem;
         }
 
         .receipt-line.discount {
-            color: #c0392b;
+            color: #0066cc;
         }
 
         .receipt-divider {
-            border-top: 1px dashed #ccc;
-            margin: 10px 0;
+            border-top: 1px solid #e5e5e5;
+            margin: 12px 0;
         }
 
         .receipt-total {
             display: flex;
             justify-content: space-between;
-            font-size: 18px;
-            font-weight: bold;
-            padding-top: 10px;
-            border-top: 2px solid #333;
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding-top: 12px;
+            border-top: 2px solid #1a1a1a;
         }
 
         .empty-cart {
             text-align: center;
-            padding: 40px;
-            color: #d4d4d4;
+            padding: 48px 24px;
+            color: #999;
         }
 
         .empty-cart .icon {
-            font-size: 48px;
-            margin-bottom: 15px;
+            font-size: 40px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-cart p {
+            font-size: 0.9rem;
+            margin-bottom: 4px;
         }
 
         .pricing-info {
-            margin-top: 20px;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.05);
+            margin-top: 28px;
+            padding: 20px;
+            background: #fafafa;
+            border: 1px solid #eee;
             border-radius: 8px;
-            font-size: 12px;
+            font-size: 0.85rem;
         }
 
         .pricing-info h4 {
-            margin-bottom: 10px;
-            color: #f5b041;
+            margin-bottom: 12px;
+            color: #1a1a1a;
+            font-size: 0.85rem;
+            font-weight: 600;
         }
 
         .pricing-info ul {
@@ -286,12 +313,12 @@
 
         .pricing-info li {
             padding: 4px 0;
-            color: #d4d4d4;
+            color: #666;
         }
 
         .pricing-info li::before {
-            content: "•";
-            color: #3498db;
+            content: "–";
+            color: #999;
             margin-right: 8px;
         }
     </style>
