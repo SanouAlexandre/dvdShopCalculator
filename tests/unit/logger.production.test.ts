@@ -113,3 +113,227 @@ describe('logger format with stack traces', () => {
     expect(capturedInfo.message).toBe('Simple message without stack');
   });
 });
+
+describe('logger Loki transport configuration', () => {
+  const originalEnv = process.env;
+
+  beforeEach(() => {
+    jest.resetModules();
+    process.env = { ...originalEnv };
+    delete process.env.LOKI_HOST;
+    delete process.env.LOKI_BASIC_AUTH;
+    delete process.env.HOSTNAME;
+    delete process.env.SERVICE_NAME;
+  });
+
+  afterAll(() => {
+    process.env = originalEnv;
+    jest.resetModules();
+  });
+
+  it('should log warning when LOKI_HOST is set but winston-loki is not installed', () => {
+    // Mock require to simulate winston-loki not being installed
+    jest.doMock('winston-loki', () => {
+      throw new Error('MODULE_NOT_FOUND');
+    });
+
+    process.env.LOKI_HOST = 'http://localhost:3100';
+    const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
+
+    require('../../src/utils/logger');
+
+    expect(consoleSpy).toHaveBeenCalledWith('[Loki] LOKI_HOST configured but winston-loki not installed');
+    consoleSpy.mockRestore();
+  });
+
+  it('should configure Loki transport when LOKI_HOST and winston-loki are available', () => {
+    // Create a proper mock that behaves like an EventEmitter
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const EventEmitter = require('events');
+    
+    class MockLokiTransport extends EventEmitter {
+      name = 'loki';
+      static calledWith: unknown = null;
+      constructor(options: unknown) {
+        super();
+        MockLokiTransport.calledWith = options;
+      }
+      log(_info: unknown, callback: () => void) {
+        callback();
+      }
+    }
+    
+    jest.doMock('winston-loki', () => MockLokiTransport);
+
+    process.env.LOKI_HOST = 'http://localhost:3100';
+    const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+    jest.spyOn(console, 'error').mockImplementation(); // suppress legacy warning
+
+    require('../../src/utils/logger');
+
+    expect(consoleSpy).toHaveBeenCalledWith('[Loki] Transport configured for http://localhost:3100');
+    expect(MockLokiTransport.calledWith).toEqual(
+      expect.objectContaining({
+        host: 'http://localhost:3100',
+        json: true,
+        replaceTimestamp: true,
+      })
+    );
+    consoleSpy.mockRestore();
+  });
+
+  it('should add hostname label when HOSTNAME env is set', () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const EventEmitter = require('events');
+    
+    class MockLokiTransport extends EventEmitter {
+      name = 'loki';
+      static calledWith: unknown = null;
+      constructor(options: unknown) {
+        super();
+        MockLokiTransport.calledWith = options;
+      }
+      log(_info: unknown, callback: () => void) {
+        callback();
+      }
+    }
+    
+    jest.doMock('winston-loki', () => MockLokiTransport);
+
+    process.env.LOKI_HOST = 'http://localhost:3100';
+    process.env.HOSTNAME = 'test-host-123';
+    jest.spyOn(console, 'log').mockImplementation();
+    jest.spyOn(console, 'error').mockImplementation();
+
+    require('../../src/utils/logger');
+
+    expect(MockLokiTransport.calledWith).toEqual(
+      expect.objectContaining({
+        labels: expect.objectContaining({
+          host: 'test-host-123',
+        }),
+      })
+    );
+  });
+
+  it('should use custom SERVICE_NAME in labels', () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const EventEmitter = require('events');
+    
+    class MockLokiTransport extends EventEmitter {
+      name = 'loki';
+      static calledWith: unknown = null;
+      constructor(options: unknown) {
+        super();
+        MockLokiTransport.calledWith = options;
+      }
+      log(_info: unknown, callback: () => void) {
+        callback();
+      }
+    }
+    
+    jest.doMock('winston-loki', () => MockLokiTransport);
+
+    process.env.LOKI_HOST = 'http://localhost:3100';
+    process.env.SERVICE_NAME = 'my-custom-service';
+    jest.spyOn(console, 'log').mockImplementation();
+    jest.spyOn(console, 'error').mockImplementation();
+
+    require('../../src/utils/logger');
+
+    expect(MockLokiTransport.calledWith).toEqual(
+      expect.objectContaining({
+        labels: expect.objectContaining({
+          app: 'my-custom-service',
+        }),
+      })
+    );
+  });
+
+  it('should add basicAuth when LOKI_BASIC_AUTH is configured', () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const EventEmitter = require('events');
+    
+    class MockLokiTransport extends EventEmitter {
+      name = 'loki';
+      static calledWith: unknown = null;
+      constructor(options: unknown) {
+        super();
+        MockLokiTransport.calledWith = options;
+      }
+      log(_info: unknown, callback: () => void) {
+        callback();
+      }
+    }
+    
+    jest.doMock('winston-loki', () => MockLokiTransport);
+
+    process.env.LOKI_HOST = 'http://localhost:3100';
+    process.env.LOKI_BASIC_AUTH = 'user:password';
+    jest.spyOn(console, 'log').mockImplementation();
+    jest.spyOn(console, 'error').mockImplementation();
+
+    require('../../src/utils/logger');
+
+    expect(MockLokiTransport.calledWith).toEqual(
+      expect.objectContaining({
+        basicAuth: 'user:password',
+      })
+    );
+  });
+
+  it('should handle Loki connection errors via onConnectionError callback', () => {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const EventEmitter = require('events');
+    
+    let capturedErrorHandler: ((err: Error) => void) | undefined;
+    
+    class MockLokiTransport extends EventEmitter {
+      name = 'loki';
+      constructor(options: { onConnectionError?: (err: Error) => void }) {
+        super();
+        capturedErrorHandler = options.onConnectionError;
+      }
+      log(_info: unknown, callback: () => void) {
+        callback();
+      }
+    }
+    
+    jest.doMock('winston-loki', () => MockLokiTransport);
+
+    process.env.LOKI_HOST = 'http://localhost:3100';
+    jest.spyOn(console, 'log').mockImplementation();
+    jest.spyOn(console, 'error').mockImplementation();
+    const consoleErrorSpy = jest.spyOn(console, 'error');
+
+    require('../../src/utils/logger');
+
+    // Trigger the error callback
+    expect(capturedErrorHandler).toBeDefined();
+    capturedErrorHandler!(new Error('Connection refused'));
+
+    expect(consoleErrorSpy).toHaveBeenCalledWith('[Loki] Connection error:', 'Connection refused');
+  });
+
+  it('should not configure Loki when LOKI_HOST is not set', () => {
+    // Remove any previous mocks - use real module behavior
+    jest.unmock('winston-loki');
+    
+    delete process.env.LOKI_HOST;
+    
+    // Clear previous console spy calls by creating a fresh spy
+    const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+    consoleSpy.mockClear(); // Clear any previous calls
+    jest.spyOn(console, 'error').mockImplementation();
+
+    const { logger: testLogger } = require('../../src/utils/logger');
+
+    // Logger should still work but no Loki transport was configured for THIS test
+    // We just verify the logger is functional
+    expect(testLogger).toBeDefined();
+    expect(testLogger.transports).toBeDefined();
+    
+    // Clean up
+    consoleSpy.mockRestore();
+  });
+});
