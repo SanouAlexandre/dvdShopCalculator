@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import request from 'supertest';
+
+// Set VERCEL env to prevent server from listening on port
+process.env.VERCEL = '1';
+
 import { app } from '../../src/server';
 
 describe('API E2E Tests', () => {
