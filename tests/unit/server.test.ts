@@ -40,7 +40,7 @@ describe('Server', () => {
       const response = await request(app).get('/health');
 
       expect(response.headers['content-security-policy']).toBe(
-        "default-src 'self'; script-src 'self'; style-src 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+        "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'; upgrade-insecure-requests"
       );
     });
 
