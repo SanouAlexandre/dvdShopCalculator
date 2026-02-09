@@ -71,7 +71,7 @@ app.use((_req: Request, res: Response, next: NextFunction) => {
   // Content Security Policy with upgrade-insecure-requests and frame-ancestors
   res.setHeader(
     'Content-Security-Policy',
-    "default-src 'self'; script-src 'self'; style-src 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
+    "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; frame-ancestors 'none'; upgrade-insecure-requests"
   );
   // Prevent MIME type sniffing
   res.setHeader('X-Content-Type-Options', 'nosniff');
