@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /**
  * Unit tests for Vercel serverless API endpoint.
  * Tests the API routes and middleware for serverless deployment.
@@ -21,7 +24,7 @@ describe('API Serverless Function', () => {
   describe('Security Headers', () => {
     it('should set Content-Security-Policy header', async () => {
       const response = await request(app).get('/health');
-      
+
       expect(response.headers['content-security-policy']).toBe(
         "default-src 'self'; script-src 'self'; style-src 'self'; frame-ancestors 'none'; upgrade-insecure-requests"
       );
@@ -29,13 +32,13 @@ describe('API Serverless Function', () => {
 
     it('should set X-Content-Type-Options header', async () => {
       const response = await request(app).get('/health');
-      
+
       expect(response.headers['x-content-type-options']).toBe('nosniff');
     });
 
     it('should set Permissions-Policy header', async () => {
       const response = await request(app).get('/health');
-      
+
       expect(response.headers['permissions-policy']).toBe(
         'geolocation=(), microphone=(), camera=(), payment=()'
       );
@@ -43,7 +46,7 @@ describe('API Serverless Function', () => {
 
     it('should set Strict-Transport-Security header', async () => {
       const response = await request(app).get('/health');
-      
+
       expect(response.headers['strict-transport-security']).toBe(
         'max-age=63072000; includeSubDomains; preload'
       );
@@ -51,13 +54,13 @@ describe('API Serverless Function', () => {
 
     it('should set Referrer-Policy header', async () => {
       const response = await request(app).get('/health');
-      
+
       expect(response.headers['referrer-policy']).toBe('strict-origin-when-cross-origin');
     });
 
     it('should not expose X-Powered-By header', async () => {
       const response = await request(app).get('/health');
-      
+
       expect(response.headers['x-powered-by']).toBeUndefined();
     });
   });
@@ -65,7 +68,7 @@ describe('API Serverless Function', () => {
   describe('GET /health', () => {
     it('should return healthy status', async () => {
       const response = await request(app).get('/health');
-      
+
       expect(response.status).toBe(200);
       expect(response.body.status).toBe('healthy');
       expect(response.body.timestamp).toBeDefined();
@@ -73,7 +76,7 @@ describe('API Serverless Function', () => {
 
     it('should return valid ISO timestamp', async () => {
       const response = await request(app).get('/health');
-      
+
       const timestamp = new Date(response.body.timestamp);
       expect(timestamp.toISOString()).toBe(response.body.timestamp);
     });
@@ -88,7 +91,7 @@ describe('API Serverless Function', () => {
       await request(app)
         .post('/api/calculate')
         .send({ items: ['Back to the Future 1'] });
-      
+
       expect(addBreadcrumb).toHaveBeenCalledWith(
         expect.objectContaining({
           message: 'Calculate request received',
@@ -102,7 +105,7 @@ describe('API Serverless Function', () => {
       const response = await request(app)
         .post('/api/calculate')
         .send({ items: ['Back to the Future 1'] });
-      
+
       expect(response.status).toBe(200);
       expect(response.body.totalPrice).toBe(15);
       expect(response.body.currency).toBe('EUR');
@@ -113,13 +116,9 @@ describe('API Serverless Function', () => {
       const response = await request(app)
         .post('/api/calculate')
         .send({
-          items: [
-            'Back to the Future 1',
-            'Back to the Future 2',
-            'Back to the Future 3',
-          ],
+          items: ['Back to the Future 1', 'Back to the Future 2', 'Back to the Future 3'],
         });
-      
+
       expect(response.status).toBe(200);
       expect(response.body.totalPrice).toBe(36);
       expect(response.body.discountApplied).toBe('20%');
@@ -132,7 +131,7 @@ describe('API Serverless Function', () => {
         .send({
           items: ['Back to the Future 1', 'Back to the Future 2'],
         });
-      
+
       expect(response.status).toBe(200);
       expect(response.body.totalPrice).toBe(27);
       expect(response.body.discountApplied).toBe('10%');
@@ -142,26 +141,22 @@ describe('API Serverless Function', () => {
       const response = await request(app)
         .post('/api/calculate')
         .send({ items: ['Back to the Future 1'] });
-      
+
       expect(response.status).toBe(200);
       expect(response.body.breakdown).toBeDefined();
     });
 
     it('should handle empty items array', async () => {
-      const response = await request(app)
-        .post('/api/calculate')
-        .send({ items: [] });
-      
+      const response = await request(app).post('/api/calculate').send({ items: [] });
+
       expect(response.status).toBe(200);
       expect(response.body.totalPrice).toBe(0);
       expect(response.body.itemsCount).toBe(0);
     });
 
     it('should return 400 for missing items', async () => {
-      const response = await request(app)
-        .post('/api/calculate')
-        .send({});
-      
+      const response = await request(app).post('/api/calculate').send({});
+
       expect(response.status).toBe(400);
       expect(response.body.error).toBe('Invalid request');
       expect(response.body.message).toBe(
@@ -173,7 +168,7 @@ describe('API Serverless Function', () => {
       const response = await request(app)
         .post('/api/calculate')
         .send({ items: 'Back to the Future 1' });
-      
+
       expect(response.status).toBe(400);
       expect(response.body.error).toBe('Invalid request');
     });
@@ -182,7 +177,7 @@ describe('API Serverless Function', () => {
       const response = await request(app)
         .post('/api/calculate')
         .send({ items: [1, 2, 3] });
-      
+
       expect(response.status).toBe(400);
       expect(response.body.error).toBe('Invalid request');
       expect(response.body.message).toBe('All items must be strings');
@@ -192,7 +187,7 @@ describe('API Serverless Function', () => {
       await request(app)
         .post('/api/calculate')
         .send({ items: ['Movie 1', 'Movie 2', 'Movie 3'] });
-      
+
       expect(addBreadcrumb).toHaveBeenCalledWith(
         expect.objectContaining({
           data: { itemsCount: 3 },
@@ -201,10 +196,8 @@ describe('API Serverless Function', () => {
     });
 
     it('should track 0 items count when items is undefined', async () => {
-      await request(app)
-        .post('/api/calculate')
-        .send({});
-      
+      await request(app).post('/api/calculate').send({});
+
       expect(addBreadcrumb).toHaveBeenCalledWith(
         expect.objectContaining({
           data: { itemsCount: 0 },
@@ -221,7 +214,7 @@ describe('API Serverless Function', () => {
         .post('/api/calculate')
         .set('Content-Type', 'application/json')
         .send('invalid json');
-      
+
       // The global error handler returns 500 for unhandled errors
       expect(response.status).toBe(500);
       expect(response.body.error).toBe('Internal server error');

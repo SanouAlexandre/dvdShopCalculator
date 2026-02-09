@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import request from 'supertest';
 import { app } from '../../src/server';
 
@@ -64,9 +65,7 @@ describe('API E2E Tests', () => {
     });
 
     it('should handle empty items array', async () => {
-      const response = await request(app)
-        .post('/api/calculate')
-        .send({ items: [] });
+      const response = await request(app).post('/api/calculate').send({ items: [] });
 
       expect(response.status).toBe(200);
       expect(response.body.totalPrice).toBe(0);

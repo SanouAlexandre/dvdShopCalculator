@@ -1,14 +1,10 @@
-import {
-  createDiscount,
-  applyDiscount,
-  NO_DISCOUNT,
-} from '../../src/core/models/Discount';
+import { createDiscount, applyDiscount, NO_DISCOUNT } from '../../src/core/models/Discount';
 
 describe('Discount', () => {
   describe('createDiscount', () => {
     it('should create a valid discount', () => {
       const discount = createDiscount('Test Discount', 10, '10% off');
-      
+
       expect(discount.name).toBe('Test Discount');
       expect(discount.percentage).toBe(10);
       expect(discount.description).toBe('10% off');

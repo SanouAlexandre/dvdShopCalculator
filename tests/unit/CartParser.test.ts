@@ -29,7 +29,11 @@ describe('CartParser', () => {
     it('should parse multiple movie titles', () => {
       const cart = parser.parse('La chèvre\nLes Visiteurs\nAmélie');
       expect(cart.items).toHaveLength(3);
-      expect(cart.items.map((m: { title: string }) => m.title)).toEqual(['La chèvre', 'Les Visiteurs', 'Amélie']);
+      expect(cart.items.map((m: { title: string }) => m.title)).toEqual([
+        'La chèvre',
+        'Les Visiteurs',
+        'Amélie',
+      ]);
     });
 
     it('should parse Back to the Future 1', () => {

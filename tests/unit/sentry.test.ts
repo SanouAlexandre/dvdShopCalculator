@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-var-requires */
 /**
  * Unit tests for Sentry instrumentation module.
  * Tests all exported functions with and without SENTRY_DSN configured.
@@ -13,7 +18,7 @@ jest.mock('@sentry/node', () => ({
   captureMessage: jest.fn(),
   setUser: jest.fn(),
   addBreadcrumb: jest.fn(),
-  withScope: jest.fn((callback) => callback({ setExtras: jest.fn() })),
+  withScope: jest.fn(callback => callback({ setExtras: jest.fn() })),
   captureConsoleIntegration: jest.fn(() => ({})),
 }));
 
@@ -32,10 +37,10 @@ describe('Sentry Instrumentation', () => {
     it('should not initialize Sentry when SENTRY_DSN is not set', () => {
       delete process.env.SENTRY_DSN;
       const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
-      
+
       const { initSentry } = require('../../src/instrumentation/sentry');
       initSentry();
-      
+
       expect(consoleSpy).toHaveBeenCalledWith('[Sentry] Disabled - SENTRY_DSN not configured');
       consoleSpy.mockRestore();
     });
@@ -45,10 +50,10 @@ describe('Sentry Instrumentation', () => {
       process.env.SENTRY_ENVIRONMENT = 'test';
       const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
       const Sentry = require('@sentry/node');
-      
+
       const { initSentry } = require('../../src/instrumentation/sentry');
       initSentry();
-      
+
       expect(Sentry.init).toHaveBeenCalledWith(
         expect.objectContaining({
           dsn: 'https://test@sentry.io/123',
@@ -64,10 +69,10 @@ describe('Sentry Instrumentation', () => {
       process.env.SENTRY_ENVIRONMENT = 'production';
       jest.spyOn(console, 'log').mockImplementation();
       const Sentry = require('@sentry/node');
-      
+
       const { initSentry } = require('../../src/instrumentation/sentry');
       initSentry();
-      
+
       expect(Sentry.init).toHaveBeenCalledWith(
         expect.objectContaining({
           tracesSampleRate: 0.1,
@@ -81,10 +86,10 @@ describe('Sentry Instrumentation', () => {
       process.env.SENTRY_ENVIRONMENT = 'development';
       jest.spyOn(console, 'log').mockImplementation();
       const Sentry = require('@sentry/node');
-      
+
       const { initSentry } = require('../../src/instrumentation/sentry');
       initSentry();
-      
+
       expect(Sentry.init).toHaveBeenCalledWith(
         expect.objectContaining({
           tracesSampleRate: 1,
@@ -97,10 +102,10 @@ describe('Sentry Instrumentation', () => {
       process.env.SENTRY_DSN = 'https://test@sentry.io/123';
       jest.spyOn(console, 'log').mockImplementation();
       const Sentry = require('@sentry/node');
-      
+
       const { initSentry } = require('../../src/instrumentation/sentry');
       initSentry();
-      
+
       const initCall = Sentry.init.mock.calls[0][0];
       const event = {
         request: {
@@ -112,9 +117,9 @@ describe('Sentry Instrumentation', () => {
           },
         },
       };
-      
+
       const result = initCall.beforeSend(event);
-      
+
       expect(result.request.headers.authorization).toBeUndefined();
       expect(result.request.headers.cookie).toBeUndefined();
       expect(result.request.headers['x-api-key']).toBeUndefined();
@@ -125,15 +130,15 @@ describe('Sentry Instrumentation', () => {
       process.env.SENTRY_DSN = 'https://test@sentry.io/123';
       jest.spyOn(console, 'log').mockImplementation();
       const Sentry = require('@sentry/node');
-      
+
       const { initSentry } = require('../../src/instrumentation/sentry');
       initSentry();
-      
+
       const initCall = Sentry.init.mock.calls[0][0];
       const event = { message: 'test' };
-      
+
       const result = initCall.beforeSend(event);
-      
+
       expect(result).toEqual(event);
     });
   });
@@ -142,21 +147,21 @@ describe('Sentry Instrumentation', () => {
     it('should not capture when SENTRY_DSN is not set', () => {
       delete process.env.SENTRY_DSN;
       const Sentry = require('@sentry/node');
-      
+
       const { captureException } = require('../../src/instrumentation/sentry');
       captureException(new Error('test'));
-      
+
       expect(Sentry.withScope).not.toHaveBeenCalled();
     });
 
     it('should capture exception when SENTRY_DSN is set', () => {
       process.env.SENTRY_DSN = 'https://test@sentry.io/123';
       const Sentry = require('@sentry/node');
-      
+
       const { captureException } = require('../../src/instrumentation/sentry');
       const error = new Error('test error');
       captureException(error);
-      
+
       expect(Sentry.withScope).toHaveBeenCalled();
       expect(Sentry.captureException).toHaveBeenCalledWith(error);
     });
@@ -165,13 +170,13 @@ describe('Sentry Instrumentation', () => {
       process.env.SENTRY_DSN = 'https://test@sentry.io/123';
       const Sentry = require('@sentry/node');
       const mockSetExtras = jest.fn();
-      Sentry.withScope.mockImplementation((callback: (scope: { setExtras: jest.Mock }) => void) => 
+      Sentry.withScope.mockImplementation((callback: (scope: { setExtras: jest.Mock }) => void) =>
         callback({ setExtras: mockSetExtras })
       );
-      
+
       const { captureException } = require('../../src/instrumentation/sentry');
       captureException(new Error('test'), { url: '/test', method: 'POST' });
-      
+
       expect(mockSetExtras).toHaveBeenCalledWith({ url: '/test', method: 'POST' });
     });
   });
@@ -180,30 +185,30 @@ describe('Sentry Instrumentation', () => {
     it('should not capture when SENTRY_DSN is not set', () => {
       delete process.env.SENTRY_DSN;
       const Sentry = require('@sentry/node');
-      
+
       const { captureMessage } = require('../../src/instrumentation/sentry');
       captureMessage('test message');
-      
+
       expect(Sentry.captureMessage).not.toHaveBeenCalled();
     });
 
     it('should capture message when SENTRY_DSN is set', () => {
       process.env.SENTRY_DSN = 'https://test@sentry.io/123';
       const Sentry = require('@sentry/node');
-      
+
       const { captureMessage } = require('../../src/instrumentation/sentry');
       captureMessage('test message', 'warning');
-      
+
       expect(Sentry.captureMessage).toHaveBeenCalledWith('test message', 'warning');
     });
 
     it('should use info level by default', () => {
       process.env.SENTRY_DSN = 'https://test@sentry.io/123';
       const Sentry = require('@sentry/node');
-      
+
       const { captureMessage } = require('../../src/instrumentation/sentry');
       captureMessage('test message');
-      
+
       expect(Sentry.captureMessage).toHaveBeenCalledWith('test message', 'info');
     });
   });
@@ -212,30 +217,30 @@ describe('Sentry Instrumentation', () => {
     it('should not set user when SENTRY_DSN is not set', () => {
       delete process.env.SENTRY_DSN;
       const Sentry = require('@sentry/node');
-      
+
       const { setUser } = require('../../src/instrumentation/sentry');
       setUser({ id: '123' });
-      
+
       expect(Sentry.setUser).not.toHaveBeenCalled();
     });
 
     it('should set user when SENTRY_DSN is set', () => {
       process.env.SENTRY_DSN = 'https://test@sentry.io/123';
       const Sentry = require('@sentry/node');
-      
+
       const { setUser } = require('../../src/instrumentation/sentry');
       setUser({ id: '123', email: 'test@example.com' });
-      
+
       expect(Sentry.setUser).toHaveBeenCalledWith({ id: '123', email: 'test@example.com' });
     });
 
     it('should allow clearing user with null', () => {
       process.env.SENTRY_DSN = 'https://test@sentry.io/123';
       const Sentry = require('@sentry/node');
-      
+
       const { setUser } = require('../../src/instrumentation/sentry');
       setUser(null);
-      
+
       expect(Sentry.setUser).toHaveBeenCalledWith(null);
     });
   });
@@ -244,25 +249,25 @@ describe('Sentry Instrumentation', () => {
     it('should not add breadcrumb when SENTRY_DSN is not set', () => {
       delete process.env.SENTRY_DSN;
       const Sentry = require('@sentry/node');
-      
+
       const { addBreadcrumb } = require('../../src/instrumentation/sentry');
       addBreadcrumb({ message: 'test' });
-      
+
       expect(Sentry.addBreadcrumb).not.toHaveBeenCalled();
     });
 
     it('should add breadcrumb when SENTRY_DSN is set', () => {
       process.env.SENTRY_DSN = 'https://test@sentry.io/123';
       const Sentry = require('@sentry/node');
-      
+
       const { addBreadcrumb } = require('../../src/instrumentation/sentry');
-      addBreadcrumb({ 
-        message: 'test breadcrumb', 
+      addBreadcrumb({
+        message: 'test breadcrumb',
         category: 'api',
         level: 'info',
-        data: { key: 'value' }
+        data: { key: 'value' },
       });
-      
+
       expect(Sentry.addBreadcrumb).toHaveBeenCalledWith({
         message: 'test breadcrumb',
         category: 'api',
@@ -276,13 +281,13 @@ describe('Sentry Instrumentation', () => {
     it('should capture exception and call next when SENTRY_DSN is set', () => {
       process.env.SENTRY_DSN = 'https://test@sentry.io/123';
       const Sentry = require('@sentry/node');
-      
+
       const { sentryErrorHandler } = require('../../src/instrumentation/sentry');
       const error = new Error('test error');
       const next = jest.fn();
-      
+
       sentryErrorHandler(error, {}, {}, next);
-      
+
       expect(Sentry.captureException).toHaveBeenCalledWith(error);
       expect(next).toHaveBeenCalledWith(error);
     });
@@ -290,13 +295,13 @@ describe('Sentry Instrumentation', () => {
     it('should only call next when SENTRY_DSN is not set', () => {
       delete process.env.SENTRY_DSN;
       const Sentry = require('@sentry/node');
-      
+
       const { sentryErrorHandler } = require('../../src/instrumentation/sentry');
       const error = new Error('test error');
       const next = jest.fn();
-      
+
       sentryErrorHandler(error, {}, {}, next);
-      
+
       expect(Sentry.captureException).not.toHaveBeenCalled();
       expect(next).toHaveBeenCalledWith(error);
     });
@@ -306,9 +311,9 @@ describe('Sentry Instrumentation', () => {
     it('should call next', () => {
       const { sentryRequestHandler } = require('../../src/instrumentation/sentry');
       const next = jest.fn();
-      
+
       sentryRequestHandler({}, {}, next);
-      
+
       expect(next).toHaveBeenCalled();
     });
   });
@@ -468,7 +473,7 @@ describe('Sentry Instrumentation', () => {
       expect(Sentry.setUser).toHaveBeenCalledWith({
         id: '123',
         email: 'test@example.com',
-        username: 'testuser'
+        username: 'testuser',
       });
     });
   });
@@ -492,13 +497,13 @@ describe('Sentry Instrumentation', () => {
       addBreadcrumb({
         message: 'navigation',
         category: 'navigation',
-        level: 'debug'
+        level: 'debug',
       });
 
       expect(Sentry.addBreadcrumb).toHaveBeenCalledWith({
         message: 'navigation',
         category: 'navigation',
-        level: 'debug'
+        level: 'debug',
       });
     });
 
@@ -509,12 +514,12 @@ describe('Sentry Instrumentation', () => {
       const { addBreadcrumb } = require('../../src/instrumentation/sentry');
       addBreadcrumb({
         message: 'critical action',
-        level: 'fatal'
+        level: 'fatal',
       });
 
       expect(Sentry.addBreadcrumb).toHaveBeenCalledWith({
         message: 'critical action',
-        level: 'fatal'
+        level: 'fatal',
       });
     });
 
@@ -525,12 +530,12 @@ describe('Sentry Instrumentation', () => {
       const { addBreadcrumb } = require('../../src/instrumentation/sentry');
       addBreadcrumb({
         message: 'error breadcrumb',
-        level: 'error'
+        level: 'error',
       });
 
       expect(Sentry.addBreadcrumb).toHaveBeenCalledWith({
         message: 'error breadcrumb',
-        level: 'error'
+        level: 'error',
       });
     });
 
@@ -541,12 +546,12 @@ describe('Sentry Instrumentation', () => {
       const { addBreadcrumb } = require('../../src/instrumentation/sentry');
       addBreadcrumb({
         message: 'warning breadcrumb',
-        level: 'warning'
+        level: 'warning',
       });
 
       expect(Sentry.addBreadcrumb).toHaveBeenCalledWith({
         message: 'warning breadcrumb',
-        level: 'warning'
+        level: 'warning',
       });
     });
   });

@@ -109,9 +109,7 @@ describe('BackToTheFutureDiscountRule', () => {
     });
 
     it('should apply discount to all BTTF DVDs including duplicates', () => {
-      const cart = parser.parse(
-        'Back to the Future 1\nBack to the Future 2\nBack to the Future 1'
-      );
+      const cart = parser.parse('Back to the Future 1\nBack to the Future 2\nBack to the Future 1');
       // 45 * 0.9 = 40.5
       expect(rule.calculateDiscountedPrice(cart)).toBe(40.5);
     });

@@ -99,9 +99,7 @@ describe('Cart', () => {
 
   describe('getUniqueBttfEpisodes', () => {
     it('should return empty set for cart without BTTF movies', () => {
-      const movies = [
-        createMovie('La chèvre', STANDARD_DVD_PRICE, BTTF_DVD_PRICE),
-      ];
+      const movies = [createMovie('La chèvre', STANDARD_DVD_PRICE, BTTF_DVD_PRICE)];
       const cart = createCart(movies);
       const episodes = getUniqueBttfEpisodes(cart);
       expect(episodes.size).toBe(0);

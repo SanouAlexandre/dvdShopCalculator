@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 /**
  * Tests for logger module in production mode
  * This file tests the production-specific file transports
@@ -39,8 +44,9 @@ describe('logger in production mode', () => {
     expect(fileTransports.length).toBe(2);
 
     // Check filenames using options or direct properties
-    const filenames = fileTransports.map((t: { filename?: string; options?: { filename?: string } }) => 
-      t.filename || (t.options && t.options.filename)
+    const filenames = fileTransports.map(
+      (t: { filename?: string; options?: { filename?: string } }) =>
+        t.filename || (t.options && t.options.filename)
     );
 
     expect(filenames).toContain('error.log');
@@ -51,16 +57,16 @@ describe('logger in production mode', () => {
 describe('logger format with stack traces', () => {
   it('should handle errors with stack in actual logger', () => {
     jest.resetModules();
-    
+
     // Import the actual logger
     const { logger: realLogger } = require('../../src/utils/logger');
-    
+
     // Create a custom transport to capture output
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const Transport = require('winston-transport');
-    
+
     let capturedInfo: Record<string, unknown> = {};
-    
+
     class TestTransport extends Transport {
       log(info: Record<string, unknown>, callback: () => void) {
         capturedInfo = info;
@@ -86,13 +92,13 @@ describe('logger format with stack traces', () => {
 
   it('should format message without stack correctly', () => {
     jest.resetModules();
-    
+
     const { logger: realLogger } = require('../../src/utils/logger');
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const Transport = require('winston-transport');
-    
+
     let capturedInfo: Record<string, unknown> = {};
-    
+
     class TestTransport extends Transport {
       log(info: Record<string, unknown>, callback: () => void) {
         capturedInfo = info;
@@ -142,7 +148,9 @@ describe('logger Loki transport configuration', () => {
 
     require('../../src/utils/logger');
 
-    expect(consoleSpy).toHaveBeenCalledWith('[Loki] LOKI_HOST configured but winston-loki not installed');
+    expect(consoleSpy).toHaveBeenCalledWith(
+      '[Loki] LOKI_HOST configured but winston-loki not installed'
+    );
     consoleSpy.mockRestore();
   });
 
@@ -150,7 +158,7 @@ describe('logger Loki transport configuration', () => {
     // Create a proper mock that behaves like an EventEmitter
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const EventEmitter = require('events');
-    
+
     class MockLokiTransport extends EventEmitter {
       name = 'loki';
       static calledWith: unknown = null;
@@ -162,7 +170,7 @@ describe('logger Loki transport configuration', () => {
         callback();
       }
     }
-    
+
     jest.doMock('winston-loki', () => MockLokiTransport);
 
     process.env.LOKI_HOST = 'http://localhost:3100';
@@ -171,7 +179,9 @@ describe('logger Loki transport configuration', () => {
 
     require('../../src/utils/logger');
 
-    expect(consoleSpy).toHaveBeenCalledWith('[Loki] Transport configured for http://localhost:3100');
+    expect(consoleSpy).toHaveBeenCalledWith(
+      '[Loki] Transport configured for http://localhost:3100'
+    );
     expect(MockLokiTransport.calledWith).toEqual(
       expect.objectContaining({
         host: 'http://localhost:3100',
@@ -185,7 +195,7 @@ describe('logger Loki transport configuration', () => {
   it('should add hostname label when HOSTNAME env is set', () => {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const EventEmitter = require('events');
-    
+
     class MockLokiTransport extends EventEmitter {
       name = 'loki';
       static calledWith: unknown = null;
@@ -197,7 +207,7 @@ describe('logger Loki transport configuration', () => {
         callback();
       }
     }
-    
+
     jest.doMock('winston-loki', () => MockLokiTransport);
 
     process.env.LOKI_HOST = 'http://localhost:3100';
@@ -219,7 +229,7 @@ describe('logger Loki transport configuration', () => {
   it('should use custom SERVICE_NAME in labels', () => {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const EventEmitter = require('events');
-    
+
     class MockLokiTransport extends EventEmitter {
       name = 'loki';
       static calledWith: unknown = null;
@@ -231,7 +241,7 @@ describe('logger Loki transport configuration', () => {
         callback();
       }
     }
-    
+
     jest.doMock('winston-loki', () => MockLokiTransport);
 
     process.env.LOKI_HOST = 'http://localhost:3100';
@@ -253,7 +263,7 @@ describe('logger Loki transport configuration', () => {
   it('should add basicAuth when LOKI_BASIC_AUTH is configured', () => {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const EventEmitter = require('events');
-    
+
     class MockLokiTransport extends EventEmitter {
       name = 'loki';
       static calledWith: unknown = null;
@@ -265,7 +275,7 @@ describe('logger Loki transport configuration', () => {
         callback();
       }
     }
-    
+
     jest.doMock('winston-loki', () => MockLokiTransport);
 
     process.env.LOKI_HOST = 'http://localhost:3100';
@@ -285,9 +295,9 @@ describe('logger Loki transport configuration', () => {
   it('should handle Loki connection errors via onConnectionError callback', () => {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const EventEmitter = require('events');
-    
+
     let capturedErrorHandler: ((err: Error) => void) | undefined;
-    
+
     class MockLokiTransport extends EventEmitter {
       name = 'loki';
       constructor(options: { onConnectionError?: (err: Error) => void }) {
@@ -298,7 +308,7 @@ describe('logger Loki transport configuration', () => {
         callback();
       }
     }
-    
+
     jest.doMock('winston-loki', () => MockLokiTransport);
 
     process.env.LOKI_HOST = 'http://localhost:3100';
@@ -318,9 +328,9 @@ describe('logger Loki transport configuration', () => {
   it('should not configure Loki when LOKI_HOST is not set', () => {
     // Remove any previous mocks - use real module behavior
     jest.unmock('winston-loki');
-    
+
     delete process.env.LOKI_HOST;
-    
+
     // Clear previous console spy calls by creating a fresh spy
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
     consoleSpy.mockClear(); // Clear any previous calls
@@ -332,7 +342,7 @@ describe('logger Loki transport configuration', () => {
     // We just verify the logger is functional
     expect(testLogger).toBeDefined();
     expect(testLogger.transports).toBeDefined();
-    
+
     // Clean up
     consoleSpy.mockRestore();
   });

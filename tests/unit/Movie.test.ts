@@ -6,7 +6,7 @@ describe('Movie', () => {
     describe('standard movies', () => {
       it('should create a standard movie with correct price', () => {
         const movie = createMovie('La chèvre', STANDARD_DVD_PRICE, BTTF_DVD_PRICE);
-        
+
         expect(movie.title).toBe('La chèvre');
         expect(movie.price).toBe(STANDARD_DVD_PRICE);
         expect(movie.isBackToTheFuture).toBe(false);
@@ -27,7 +27,7 @@ describe('Movie', () => {
     describe('Back to the Future pattern', () => {
       it('should recognize "Back to the Future 1"', () => {
         const movie = createMovie('Back to the Future 1', STANDARD_DVD_PRICE, BTTF_DVD_PRICE);
-        
+
         expect(movie.isBackToTheFuture).toBe(true);
         expect(movie.bttfEpisode).toBe(1);
         expect(movie.price).toBe(BTTF_DVD_PRICE);
@@ -58,7 +58,7 @@ describe('Movie', () => {
     describe('Back to Future pattern (without "the")', () => {
       it('should recognize "Back to Future 1"', () => {
         const movie = createMovie('Back to Future 1', STANDARD_DVD_PRICE, BTTF_DVD_PRICE);
-        
+
         expect(movie.isBackToTheFuture).toBe(true);
         expect(movie.bttfEpisode).toBe(1);
       });
@@ -78,7 +78,7 @@ describe('Movie', () => {
     describe('BTTF abbreviation pattern', () => {
       it('should recognize "BTTF 1"', () => {
         const movie = createMovie('BTTF 1', STANDARD_DVD_PRICE, BTTF_DVD_PRICE);
-        
+
         expect(movie.isBackToTheFuture).toBe(true);
         expect(movie.bttfEpisode).toBe(1);
       });
@@ -104,7 +104,7 @@ describe('Movie', () => {
     describe('French title pattern', () => {
       it('should recognize "Retour vers le futur 1"', () => {
         const movie = createMovie('Retour vers le futur 1', STANDARD_DVD_PRICE, BTTF_DVD_PRICE);
-        
+
         expect(movie.isBackToTheFuture).toBe(true);
         expect(movie.bttfEpisode).toBe(1);
       });
@@ -156,7 +156,7 @@ describe('Movie', () => {
         isBackToTheFuture: true,
         bttfEpisode: 1,
       };
-      
+
       expect(isBackToTheFutureMovie(movie)).toBe(true);
     });
 
@@ -166,7 +166,7 @@ describe('Movie', () => {
         price: STANDARD_DVD_PRICE,
         isBackToTheFuture: false,
       };
-      
+
       expect(isBackToTheFutureMovie(movie)).toBe(false);
     });
 
@@ -177,13 +177,13 @@ describe('Movie', () => {
         isBackToTheFuture: true,
         bttfEpisode: undefined,
       };
-      
+
       expect(isBackToTheFutureMovie(movie)).toBe(false);
     });
 
     it('should narrow type after check', () => {
       const movie = createMovie('Back to the Future 2', STANDARD_DVD_PRICE, BTTF_DVD_PRICE);
-      
+
       if (isBackToTheFutureMovie(movie)) {
         // Type should be narrowed to include bttfEpisode as number
         expect(movie.bttfEpisode).toBe(2);

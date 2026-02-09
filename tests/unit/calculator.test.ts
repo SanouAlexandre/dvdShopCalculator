@@ -58,9 +58,7 @@ describe('Calculator', () => {
     });
 
     it('should apply discount to all BTTF DVDs including duplicates', () => {
-      const cart = parser.parse(
-        'Back to the Future 1\nBack to the Future 2\nBack to the Future 1'
-      );
+      const cart = parser.parse('Back to the Future 1\nBack to the Future 2\nBack to the Future 1');
       // 3 DVDs × 15 × 0.9 = 40.5
       expect(calculator.calculateTotal(cart)).toBe(40.5);
     });
