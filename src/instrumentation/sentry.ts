@@ -88,9 +88,11 @@ export function initSentry(): void {
  * @param context - Additional context for the error
  */
 export function captureException(error: Error, context?: Record<string, unknown>): void {
-  if (!SENTRY_DSN) return;
+  if (!SENTRY_DSN) {
+    return;
+  }
 
-  Sentry.withScope((scope) => {
+  Sentry.withScope(scope => {
     if (context) {
       scope.setExtras(context);
     }
@@ -108,7 +110,9 @@ export function captureMessage(
   message: string,
   level: 'fatal' | 'error' | 'warning' | 'info' | 'debug' = 'info'
 ): void {
-  if (!SENTRY_DSN) return;
+  if (!SENTRY_DSN) {
+    return;
+  }
   Sentry.captureMessage(message, level);
 }
 
@@ -118,7 +122,9 @@ export function captureMessage(
  * @param user - User information
  */
 export function setUser(user: { id?: string; email?: string; username?: string } | null): void {
-  if (!SENTRY_DSN) return;
+  if (!SENTRY_DSN) {
+    return;
+  }
   Sentry.setUser(user);
 }
 
@@ -133,7 +139,9 @@ export function addBreadcrumb(breadcrumb: {
   level?: 'fatal' | 'error' | 'warning' | 'info' | 'debug';
   data?: Record<string, unknown>;
 }): void {
-  if (!SENTRY_DSN) return;
+  if (!SENTRY_DSN) {
+    return;
+  }
   Sentry.addBreadcrumb(breadcrumb);
 }
 
@@ -142,7 +150,7 @@ export function addBreadcrumb(breadcrumb: {
  * Use this as middleware after all routes.
  * In Sentry v8+, error handling is done via setupExpressErrorHandler.
  */
-export const sentryErrorHandler = ((
+export const sentryErrorHandler = (
   _err: Error,
   _req: unknown,
   _res: unknown,
@@ -153,18 +161,18 @@ export const sentryErrorHandler = ((
     Sentry.captureException(_err);
   }
   next(_err);
-});
+};
 
 /**
  * Express request handler for Sentry.
  * Use this as middleware before all routes.
  * In Sentry v8+, request handling is automatic.
  */
-export const sentryRequestHandler = ((
+export const sentryRequestHandler = (
   _req: unknown,
   _res: unknown,
   next: () => void
-) => next());
+) => next();
 
 // Re-export Sentry for advanced usage
 export * as Sentry from '@sentry/node';

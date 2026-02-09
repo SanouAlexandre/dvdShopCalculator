@@ -63,7 +63,7 @@ export class Calculator {
     const otherMoviesPrice = otherMovies.reduce((sum, movie) => sum + movie.price, 0);
 
     // Calculate BTTF movies price with potential discount
-    let bttfBasePrice = bttfMovies.reduce((sum, movie) => sum + movie.price, 0);
+    const bttfBasePrice = bttfMovies.reduce((sum, movie) => sum + movie.price, 0);
     let bttfDiscountedPrice = bttfBasePrice;
     let discountApplied: string | null = null;
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * Command-Line Interface (CLI) for the DVD Shop Calculator.
  *
@@ -74,6 +75,7 @@ async function handlePipedInput(
 /**
  * Handles interactive mode
  */
+// eslint-disable-next-line @typescript-eslint/require-await
 async function handleInteractiveMode(
   parser: CartParser,
   calculator: Calculator,

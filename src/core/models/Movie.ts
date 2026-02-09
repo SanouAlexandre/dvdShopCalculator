@@ -13,7 +13,7 @@ export interface Movie {
  */
 export function createMovie(title: string, standardPrice: number, bttfPrice: number): Movie {
   const normalizedTitle = title.trim();
-  
+
   // More flexible pattern matching for Back to the Future
   // Accepts: "Back to the Future 1", "Back to future 2", "BTTF 1", "Retour vers le futur 1", etc.
   const bttfPatterns = [
