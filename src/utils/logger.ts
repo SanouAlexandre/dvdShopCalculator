@@ -24,7 +24,7 @@ let LokiTransport: typeof import('winston-loki') | null = null;
  * Fails silently if not installed.
  */
 try {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
   LokiTransport = require('winston-loki');
 } catch {
   // winston-loki not installed, skip
@@ -148,7 +148,7 @@ if (LOKI_HOST && LokiTransport) {
     lokiOptions.basicAuth = process.env.LOKI_BASIC_AUTH;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
   logger.add(new LokiTransport(lokiOptions as any));
   // eslint-disable-next-line no-console
   console.log(`[Loki] Transport configured for ${LOKI_HOST}`);
