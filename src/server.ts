@@ -18,6 +18,7 @@
 
 import express, { Application, Request, Response, NextFunction } from 'express';
 import path from 'node:path';
+import rateLimit from 'express-rate-limit';
 import { Calculator } from './core/calculator';
 import { CartParser } from './infrastructure/parsers/CartParser';
 import { PriceFormatter } from './infrastructure/formatters/PriceFormatter';
@@ -86,6 +87,27 @@ app.use((_req: Request, res: Response, next: NextFunction) => {
 
 /** Parse JSON request bodies */
 app.use(express.json());
+
+/**
+ * Rate limiting middleware.
+ * Limits requests to prevent abuse and DoS attacks.
+ * - 100 requests per IP per 15 minutes for general endpoints
+ * - Standard headers for rate limit info
+ */
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per window
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  message: {
+    error: 'Too many requests',
+    message: 'You have exceeded the rate limit. Please try again later.',
+    retryAfter: '15 minutes',
+  },
+});
+
+/** Apply rate limiting to all requests */
+app.use(limiter);
 
 /** Serve static files (frontend HTML, CSS, JS) from the public directory */
 app.use(express.static(path.join(__dirname, 'public')));

@@ -201,10 +201,37 @@ Calculation: (3 × 15 € × 0.8) + 20 € = 36 € + 20 € = 56 €
 | 200 | Success |
 | 400 | Bad Request - Invalid input |
 | 404 | Not Found - Endpoint doesn't exist |
+| 429 | Too Many Requests - Rate limit exceeded |
 | 500 | Internal Server Error |
 
 ---
 
 ## Rate Limiting
 
-Currently, no rate limiting is applied. For production use, consider implementing rate limiting at the load balancer level.
+Rate limiting is implemented to prevent abuse and DoS attacks.
+
+| Parameter | Value |
+|-----------|-------|
+| **Window** | 15 minutes |
+| **Max Requests** | 100 per IP |
+| **Headers** | Standard `RateLimit-*` headers |
+
+### Response Headers
+
+Each response includes rate limit information:
+
+| Header | Description |
+|--------|-------------|
+| `RateLimit-Limit` | Maximum requests allowed in window |
+| `RateLimit-Remaining` | Requests remaining in current window |
+| `RateLimit-Reset` | Unix timestamp when the window resets |
+
+### Rate Limit Exceeded (429 Too Many Requests)
+
+```json
+{
+  "error": "Too many requests",
+  "message": "You have exceeded the rate limit. Please try again later.",
+  "retryAfter": "15 minutes"
+}
+```

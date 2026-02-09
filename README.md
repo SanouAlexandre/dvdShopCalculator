@@ -11,6 +11,7 @@ Application de calcul de prix pour une boutique de DVDs avec système de promoti
 - [Utilisation](#utilisation)
 - [Architecture](#architecture)
 - [Tests](#tests)
+- [Sécurité](#sécurité)
 - [Docker](#docker)
 - [Déploiement](#déploiement)
 - [License](#license)
@@ -200,6 +201,40 @@ npm run test:e2e
 - Couverture de code : > 90%
 - Tous les exemples fournis doivent passer
 
+## Sécurité
+
+Ce projet fait l'objet d'analyses de sécurité régulières avec plusieurs outils.
+
+### SonarQube
+
+| Métrique | Valeur |
+|----------|--------|
+| **Quality Gate** | OK |
+| **Reliability** | A |
+| **Security** | A |
+| **Security Review** | A |
+| **Maintainability** | A |
+| **Coverage** | 94.1% |
+| **Duplications** | 0.0% |
+| **Issues** | 0 |
+| **Security Hotspots** | 0 |
+
+Rapport complet : [docs/sonarqube-dvd-shop-calculator-report](docs/sonarqube-dvd-shop-calculator-report/)
+
+### Fluid Attacks
+
+Scans de sécurité réalisés avec Fluid Attacks :
+
+| Type de Scan | Résultat |
+|--------------|----------|
+| **SAST** (Static Application Security Testing) | 0 vulnerability |
+| **DAST** (Dynamic Application Security Testing) | 0 vulnerability |
+| **SCA** (Software Composition Analysis) | 0 vulnerability |
+
+> **Note** : Aucune vulnérabilité détectée par les scans de sécurité.
+
+Rapports détaillés : [docs/fluidscans](docs/fluidscans/)
+
 ##  Docker
 
 ### Développement local
@@ -284,9 +319,3 @@ terraform destroy
 ## License
 
 Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
-
-
-
----
-
-**Note** : Ce projet a été développé dans le cadre du processus de recrutement chez Ekinox.
