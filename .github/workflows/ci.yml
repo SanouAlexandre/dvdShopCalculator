@@ -96,6 +96,7 @@ jobs:
       - name: Test Docker image
         run: |
           docker run -d --name test-container -p 3000:3000 dvd-shop-calculator:${{ github.sha }}
-          sleep 5
-          curl -f http://localhost:3000/health || exit 1
+          sleep 10
+          docker logs test-container
+          curl -f http://localhost:3000/health || (docker logs test-container && exit 1)
           docker stop test-container
