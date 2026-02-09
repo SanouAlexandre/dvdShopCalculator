@@ -38,23 +38,26 @@ const logFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
   winston.format.errors({ stack: true }),
   winston.format.printf(({ level, message, timestamp, stack }) => {
+    const ts = String(timestamp);
+    const lvl = String(level).toUpperCase();
+    const msg = String(message);
     // Include stack trace for errors if available
     if (stack && typeof stack === 'string') {
-      return `${timestamp} [${level.toUpperCase()}]: ${message}\n${stack}`;
+      return `${ts} [${lvl}]: ${msg}\n${stack}`;
     }
-    return `${timestamp} [${level.toUpperCase()}]: ${message}`;
+    return `${ts} [${lvl}]: ${msg}`;
   })
 );
 
 /**
  * Winston logger instance configured for the application.
- * 
+ *
  * Log levels (in order of priority):
  * - error: Critical errors requiring immediate attention
  * - warn: Warning conditions that should be reviewed
  * - info: Informational messages about normal operation
  * - debug: Detailed debugging information
- * 
+ *
  * @example
  * logger.info('Server started on port 3000');
  * logger.error('Database connection failed', new Error('Connection timeout'));
@@ -73,7 +76,7 @@ const logger = winston.createLogger({
 /**
  * Add file transports in production environment.
  * Skipped in serverless environments (Vercel) where file system is read-only.
- * 
+ *
  * Files created:
  * - logs/error.log: Contains only error-level logs
  * - logs/combined.log: Contains all log levels
@@ -147,8 +150,10 @@ if (LOKI_HOST && LokiTransport) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   logger.add(new LokiTransport(lokiOptions as any));
+  // eslint-disable-next-line no-console
   console.log(`[Loki] Transport configured for ${LOKI_HOST}`);
 } else if (LOKI_HOST && !LokiTransport) {
+  // eslint-disable-next-line no-console
   console.warn('[Loki] LOKI_HOST configured but winston-loki not installed');
 }
 

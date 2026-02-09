@@ -37,6 +37,7 @@ const SENTRY_RELEASE = process.env.SENTRY_RELEASE || process.env.npm_package_ver
  */
 export function initSentry(): void {
   if (!SENTRY_DSN) {
+    // eslint-disable-next-line no-console
     console.log('[Sentry] Disabled - SENTRY_DSN not configured');
     return;
   }
@@ -78,6 +79,7 @@ export function initSentry(): void {
     ],
   });
 
+  // eslint-disable-next-line no-console
   console.log(`[Sentry] Initialized for ${SENTRY_ENVIRONMENT} environment`);
 }
 
@@ -155,7 +157,7 @@ export const sentryErrorHandler = (
   _req: unknown,
   _res: unknown,
   next: (err?: Error) => void
-) => {
+): void => {
   // Capture the error before passing to next
   if (SENTRY_DSN) {
     Sentry.captureException(_err);
@@ -168,11 +170,8 @@ export const sentryErrorHandler = (
  * Use this as middleware before all routes.
  * In Sentry v8+, request handling is automatic.
  */
-export const sentryRequestHandler = (
-  _req: unknown,
-  _res: unknown,
-  next: () => void
-) => next();
+export const sentryRequestHandler = (_req: unknown, _res: unknown, next: () => void): void =>
+  next();
 
 // Re-export Sentry for advanced usage
 export * as Sentry from '@sentry/node';

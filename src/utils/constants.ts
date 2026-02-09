@@ -1,10 +1,10 @@
 /**
  * Application constants
- * 
+ *
  * This file contains all configuration constants used throughout the application.
  * Centralizing these values makes it easy to modify pricing, discounts, and other
  * settings without changing business logic code.
- * 
+ *
  * @module constants
  */
 
@@ -48,7 +48,7 @@ export const BTTF_3_EPISODES_DISCOUNT = 20;
  * Regular expression pattern to match Back to the Future movie titles.
  * Captures the episode number (1, 2, or 3) in a capture group.
  * Case-insensitive matching.
- * 
+ *
  * @example
  * BTTF_TITLE_PATTERN.exec("Back to the Future 1") // ["Back to the Future 1", "1"]
  * BTTF_TITLE_PATTERN.exec("Back to the Future 2") // ["Back to the Future 2", "2"]
